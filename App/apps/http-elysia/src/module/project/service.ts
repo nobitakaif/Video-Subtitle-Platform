@@ -16,7 +16,7 @@ export abstract class ProjectService {
                 success : true,
                 data : {
                     id : res.id,
-                    title : res.id,
+                    title : res.title,
                     createdAt : res.createdAt,
                     userId : res.userId
                 }
