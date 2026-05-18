@@ -1,5 +1,7 @@
 import { Redis } from "ioredis"
 import { prisma } from "@repo/db/client"
+import { createSRT } from "./createSRT"
+import { renderVideo } from "./renderVideo"
 
 
 const redis = new Redis({
@@ -50,13 +52,13 @@ async function processRender(jobId : string, projectId : string){
                 }
             }
         })
-
+        console.log("video :", project)
         if(!project?.video){
             throw new Error("NO video Found!")
         }
 
         const inputPath = project.video.originalUrl
-        const outputPath = `/temp/${jobId}.mp4`
+        const outputPath = `./tmp/${jobId}.mp4`
 
         console.log("Rendering video....")
 
@@ -64,12 +66,21 @@ async function processRender(jobId : string, projectId : string){
 
         const outputUrl = `https://cdn.com/${jobId}.mp4`
 
+        const segments = project.subtitleTrack?.segments ||[]
+        const subtitlePath = `./temp${jobId}.srt`
+        createSRT(segments,subtitlePath)
+
+        const inputVideo = project.video.originalUrl
+        const outputVideoPath = `./output/${jobId}.mp4`
+
+        await renderVideo(inputVideo, subtitlePath, outputVideoPath)
+        
         await prisma.renderJob.update({
             where : {
                 id : jobId
             },
             data : {
-                status : "FAILED",
+                status : "SUCCESS",
                 outputUrl
             }
         })
