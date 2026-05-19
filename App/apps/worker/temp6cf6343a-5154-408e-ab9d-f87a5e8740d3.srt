@@ -1,8 +1,0 @@
-1
-00:00:00,000 --> 00:00:02,700
-Hello this is instagram_reels
-
-2
-00:00:02,700 --> 00:00:06,200
- Today I am going to tell you
-

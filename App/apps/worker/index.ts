@@ -2,6 +2,7 @@ import { Redis } from "ioredis"
 import { prisma } from "@repo/db/client"
 import { createSRT } from "./createSRT"
 import { renderVideo } from "./renderVideo"
+import path from "path"
 
 
 const redis = new Redis({
@@ -58,6 +59,8 @@ async function processRender(jobId : string, projectId : string){
         }
 
         const inputPath = project.video.originalUrl
+
+        console.log("original url ", inputPath)
         const outputPath = `./tmp/${jobId}.mp4`
 
         console.log("Rendering video....")
@@ -67,11 +70,12 @@ async function processRender(jobId : string, projectId : string){
         const outputUrl = `https://cdn.com/${jobId}.mp4`
 
         const segments = project.subtitleTrack?.segments ||[]
-        const subtitlePath = `./temp${jobId}.srt`
+        const subtitlePath = path.resolve(`./tmp/${jobId}.srt`)
+        console.log("subtitle path : ", subtitlePath)
         createSRT(segments,subtitlePath)
 
-        const inputVideo = project.video.originalUrl
-        const outputVideoPath = `./output/${jobId}.mp4`
+        const inputVideo = path.resolve(project.video.originalUrl)
+        const outputVideoPath = path.resolve(`./output/${jobId}.mp4`)
 
         await renderVideo(inputVideo, subtitlePath, outputVideoPath)
         

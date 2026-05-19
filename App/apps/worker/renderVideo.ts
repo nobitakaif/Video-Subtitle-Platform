@@ -6,15 +6,36 @@ export function renderVideo(
   outputPath: string
 ) {
 
+  const fixedSubtitlePath =
+    subtitlePath
+      .replace(/\\/g, "/")
+      .replace("C:", "C\\\\:");
+
+  const fixedInputVideo =
+    inputVideo.replace(/\\/g, "/");
+
+  const fixedOutputPath =
+    outputPath.replace(/\\/g, "/");
+
   return new Promise((resolve, reject) => {
 
-    ffmpeg(inputVideo)
+    ffmpeg(fixedInputVideo)
 
-      .videoFilters(
-        `subtitles=${subtitlePath}`
-      )
+      .videoFilters([
+        {
+          filter: "subtitles",
+          options: fixedSubtitlePath
+        }
+      ])
 
-      .output(outputPath)
+      .output(fixedOutputPath)
+
+      .on("start", (cmd) => {
+
+        console.log("FFmpeg command:");
+        console.log(cmd);
+
+      })
 
       .on("end", () => {
 
@@ -26,6 +47,7 @@ export function renderVideo(
 
       .on("error", (err) => {
 
+        console.log("FFmpeg Error:");
         console.log(err);
 
         reject(err);

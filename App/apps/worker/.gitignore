@@ -11,7 +11,11 @@ coverage
 *.lcov
 
 test.mp4
-
+tmp
+output
+storage
+audio.mp3
+audio.json
 # logs
 logs
 _.log
