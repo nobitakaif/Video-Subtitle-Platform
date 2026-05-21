@@ -11,7 +11,16 @@ export abstract class VideoSerice{
                     originalUrl 
                 }
             })
-            return 
+            console.log(res)
+            
+            if(res.id){
+                return {
+                    success : true,
+                }
+            }
+            return {
+                success : false,
+            } 
         }catch(e){
             return {
                 success : false,

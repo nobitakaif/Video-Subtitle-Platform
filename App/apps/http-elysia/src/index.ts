@@ -7,6 +7,7 @@ import { video } from "./module/video";
 import { subtitle } from "./module/subtitle-track";
 import { segments } from "./module/subtitle-segments";
 import { renderJob } from "./module/render";
+import { videoUpload } from "./module/upload-video";
 
 
 const app = new Elysia({prefix : "/api/v1"})
@@ -16,6 +17,7 @@ const app = new Elysia({prefix : "/api/v1"})
   .use(subtitle)
   .use(segments)
   .use(renderJob)
+  .use(videoUpload)
   .listen(8000);
 
 console.log(

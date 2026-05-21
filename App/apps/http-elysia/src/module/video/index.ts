@@ -6,9 +6,10 @@ import { VideoSerice } from "./service";
 export const video = new Elysia({prefix : "/video"})
     .post("/", async({ body })=>{
         const { projectId, originalUrl} = body
-        const res = VideoSerice.createVideo({ projectId, originalUrl })
+        const res = await VideoSerice.createVideo({ projectId, originalUrl })
+        console.log(res)
         return status(200,{
-          success : true  
+          success : res.success 
         })
     },{ 
         body : VideoModel.createVideoSchema
