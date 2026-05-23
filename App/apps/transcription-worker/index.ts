@@ -14,6 +14,7 @@ async function main() {
 
   while (true) {
     const job = await redis.brpop("transcription_queue", 0);
+    // await redis.lpush('test','response from transcription worker')
     if (!job) continue;
 
     const [, value] = job;
@@ -46,12 +47,14 @@ async function processor(jobId: string, projectId: string, filePath: string) {
 
     const result = await transcribe(audioPath);
 
-    console.log(" Creating SRT...");
+    // console.log(" Creating SRT...");
 
-    createSRT(result.segments, srtPath);
+    // createSRT(result.segments, srtPath);
 
     console.log(" pushing render job... worker 2");
-
+    
+    
+    
     await redis.lpush(
       "render_queue",
       JSON.stringify({
@@ -61,6 +64,9 @@ async function processor(jobId: string, projectId: string, filePath: string) {
         subtitlePath: srtPath,
       })
     );
+
+    console.log("done...")
+    
 
   } catch (err) {
     console.error(" Worker error:", err);
@@ -82,7 +88,7 @@ function extractAudio(videoPath: string, audioPath: string) {
 
 function transcribe(audioPath: string): Promise<any> {
   return new Promise((resolve, reject) => {
-    const outputDir = path.resolve("tmp");
+    const outputDir = path.resolve("../tmp");
 
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
