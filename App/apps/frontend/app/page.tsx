@@ -1,6 +1,5 @@
 import { Navbar } from "@/components/Navbar";
 import { UploadVideo } from "@/components/uploadVideo";
-import Image from "next/image";
 
 export default function Home() {
   return (
