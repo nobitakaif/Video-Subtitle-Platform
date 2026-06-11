@@ -27,18 +27,20 @@ export default function Page(){
             email: string;
             password: string;
         }) => {
-            const jwt = window.localStorage.getItem("token")
-            console.log("this is jwt token ",jwt)
-            const response = await client.api.v1.auth.signin.post({
+            
+            const { data, error  } = await client.api.v1.auth.signin.post({
                 email : email,
                 password : password,
-                jwt : jwt
             })
-            if (response.error) {
-                const errValue = response.error.value as { message?: string } | undefined;
+            if (error) {
+                const errValue = error.value as { message?: string } | undefined;
                 throw new Error(errValue?.message || "Invalid credentials");
             }
-            return response.data;
+            
+            window.localStorage.setItem("token", data.token)
+            return data;
+            
+            
         },
         onSuccess: () => {
             setTimeout(() => router.push("/"))

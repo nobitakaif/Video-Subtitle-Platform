@@ -3,11 +3,45 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { client } from "@/lib/elysiaClient";
+import { useMutation } from "@tanstack/react-query";
+import { AlertCircle, ArrowRight, CheckCircle2, Loader2, Lock, Mail } from "lucide-react";
 import { redirect } from "next/navigation";
+import { useRef } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { RxGithubLogo } from "react-icons/rx";
 
 export default function Page(){
+
+    const nameRef = useRef<HTMLInputElement | null>(null)
+    const emailRef = useRef<HTMLInputElement | null>(null)
+    const passwordRef = useRef<HTMLInputElement | null>(null)
+
+    const mutation = useMutation({
+        mutationFn :async({
+            name,
+            email,
+            password
+        } : {
+            name : string,
+            email : string,
+            password : string
+        }) =>{
+            const { data, error } = await client.api.v1.auth.signup.post({
+                name : name,
+                email : email, 
+                password : password
+            })
+
+            if(error){
+                const errValue = error.value as { message?: string } | undefined;
+                alert(errValue?.message)
+                throw new Error(errValue?.message || "Invalid credentials");
+            }
+            
+        }
+    })
+    
     return <div className="h-screen w-full bg-[#e2dfdf] flex justify-center items-center">
         <Card className="h-[70%] w-[35%]   shadow-2xl p-4">
             <CardDescription className="h-22 text-5xl text-center p-4 font-bold ">
@@ -15,27 +49,103 @@ export default function Page(){
             </CardDescription>
             <CardContent>
                 <Card className="h-88 p-4 flex flex-col gap-5 justify-start  ">
-                    <div className="flex justify-center items-center gap-4">
+                    <div className="flex justify-center items-center gap-10">
                         <FcGoogle className="cursor-pointer" size={"30"} onClick={() => alert("login with email")}/>
                         <RxGithubLogo size={30} className="cursor-pointer" onClick={() => alert("login with email")}/>
                     </div>
-                    
-                    <div>
-                        <Label htmlFor="name" className="text-xl font-bold font-serif">Name</Label>
-                        <Input type="text" name="name" placeholder="Enter your name" className=""/>
-                    </div>
-                    <div>
-                        <Label htmlFor="email" className="text-xl font-bold font-serif">Email</Label>
-                        <Input type="text" name="email" placeholder="Enter your email" className=""/>
-                    </div>
-                    <div>
-                        <Label htmlFor="email" className="text-xl font-bold font-serif">Password</Label>
-                        <Input type="password" name="email" placeholder="Enter your password" className=""/>
-                    </div>
-                    <div>
-                        <Button className="w-full text-lg">Sign in</Button>
-                    </div>
+                    <form
+                        className="space-y-4"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            mutation.mutate({
+                                name : nameRef.current?.value!,
+                                email: emailRef.current!.value,
+                                password: passwordRef.current!.value,
+                            });
+                        }}
+                    >
+                        <div className="space-y-2">
+                            <Label htmlFor="name">Name</Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/60" />
+                                <Input
+                                    id="name"
+                                    ref={nameRef}
+                                    type="name"
+                                    placeholder="you@example.com"
+                                    className="pl-10 h-10"
+                                    required
+                                />
+                            </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
+                            <div className="relative">
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/60" />
+                                <Input
+                                    id="email"
+                                    ref={emailRef}
+                                    type="email"
+                                    placeholder="you@example.com"
+                                    className="pl-10 h-10"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label htmlFor="password">Password</Label>
+                            <div className="relative">
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/60" />
+                                <Input
+                                    id="password"
+                                    ref={passwordRef}
+                                    type="password"
+                                    placeholder="Enter your password"
+                                    className="pl-10 h-10"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        {mutation.isError && (
+                            <div className="flex items-start gap-2.5 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3.5 py-3">
+                                <AlertCircle className="size-4 shrink-0 mt-0.5" />
+                                <span>
+                                    {mutation.error?.message ||
+                                        "Something went wrong. Please try again."}
+                                </span>
+                            </div>
+                        )}
+
+                        {mutation.isSuccess && (
+                            <div className="flex items-start gap-2.5 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3.5 py-3">
+                                <CheckCircle2 className="size-4 shrink-0 mt-0.5" />
+                                    <span>Signed in! Redirecting to dashboard...</span>
+                            </div>
+                        )}
+
+                        <Button
+                            type="submit"
+                            className="w-full h-10 mt-2"
+                            disabled={mutation.isPending || mutation.isSuccess}
+                        >
+                            {mutation.isPending ? (
+                                <>
+                                    <Loader2 className="size-4 animate-spin" />
+                                    Signing in...
+                                </>
+                            ) : (
+                                <>
+                                    Sign in
+                                    <ArrowRight className="size-4" />
+                                </>
+                            )}
+                        </Button>
+                    </form>
                 </Card>
+                
             </CardContent>
             <CardFooter className="text-center rounded-lg mb-2 w-full flex text-lg items-center justify-center">
                 Already have an <p className="underline p-1 cursor-pointer" onClick={() =>
