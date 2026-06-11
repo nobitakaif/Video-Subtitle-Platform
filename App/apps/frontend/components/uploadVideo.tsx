@@ -2,6 +2,18 @@
 import { useRef, useState } from "react"
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { VideoPreview } from "./videoPreview";
+import { create } from "zustand"
+import { set } from "idb-keyval"
+
+interface UploadStore{
+    file : File | null
+    setFile : (file : File ) => void
+}
+
+const useUploadStore = create<UploadStore>((set) =>({
+    file : null, 
+    setFile : (file) => set({file})
+}))
 
 export function UploadVideo() {
     const uploadRef = useRef<HTMLInputElement | null>(null)
@@ -17,9 +29,15 @@ export function UploadVideo() {
         }
 
         setFile(selectedFile);
+        
+        set("pending-video", selectedFile)
+        
         console.log('this iis file ',selectedFile)
         const url = URL.createObjectURL(selectedFile);
-        console.log(url)
+        console.log("this is url -> ",url)
+        
+        
+
         setPreviewUrl(url);
     }
 

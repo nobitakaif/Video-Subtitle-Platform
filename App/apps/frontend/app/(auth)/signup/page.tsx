@@ -19,6 +19,7 @@ export default function Page(){
                         <FcGoogle className="cursor-pointer" size={"30"} onClick={() => alert("login with email")}/>
                         <RxGithubLogo size={30} className="cursor-pointer" onClick={() => alert("login with email")}/>
                     </div>
+                    
                     <div>
                         <Label htmlFor="name" className="text-xl font-bold font-serif">Name</Label>
                         <Input type="text" name="name" placeholder="Enter your name" className=""/>
