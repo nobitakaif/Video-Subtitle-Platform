@@ -11,12 +11,13 @@ import { FcGoogle } from "react-icons/fc"
 import { RxGithubLogo } from "react-icons/rx";
 import { client } from "@/lib/elysiaClient";
 import { useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 
-export default function Page(){
+export default function Page() {
 
     const emailRef = useRef<HTMLInputElement | null>(null)
-    const passwordRef = useRef<HTMLInputElement | null> (null)
+    const passwordRef = useRef<HTMLInputElement | null>(null)
     const router = useRouter()
 
     const mutation = useMutation({
@@ -27,36 +28,38 @@ export default function Page(){
             email: string;
             password: string;
         }) => {
-            
-            const { data, error  } = await client.api.v1.auth.signin.post({
-                email : email,
-                password : password,
+
+            const { data, error } = await client.api.v1.auth.signin.post({
+                email: email,
+                password: password,
             })
-            if (error) {
-                const errValue = error.value as { message?: string } | undefined;
-                throw new Error(errValue?.message || "Invalid credentials");
+            if (error) {  
+                const errValue = error.value as { message?: string, msg? : string } | undefined;
+                console.log("error -> ",JSON.stringify(error))
+                // @ts-ignore
+                throw new Error(error.value?.msg || errValue?.message || "Invalid Credentials");
             }
-            
+            console.log("data -> ",data)
             window.localStorage.setItem("token", data.token)
+            toast.success("signin successful")
             return data;
-            
-            
+
         },
         onSuccess: () => {
-            setTimeout(() => router.push("/"))
+            router.push("/")
         },
     });
-    
-    return <div className="h-screen w-full bg-[#e2dfdf] flex justify-center items-center">
+
+    return <div className="min-h-[calc(var(--vh,1vh)*100)] w-full bg-[#e2dfdf] flex justify-center items-center">
         <Card className="h-[60%] w-[35%]   shadow-2xl p-4">
             <CardDescription className="h-15 text-5xl text-center p-4 font-bold ">
                 Sign In
             </CardDescription>
             <CardContent className="flex flex-col gap-5">
-                <Card className=" p-4 flex flex-col gap-5 justify-start  ">
+                <Card className="p-4 flex flex-col gap-5 justify-start  ">
                     <div className="flex justify-center items-center gap-10 mt-3">
-                        <FcGoogle className="cursor-pointer" size={"30"} onClick={() => alert("login with email")}/>
-                        <RxGithubLogo size={30} className="cursor-pointer" onClick={() => alert("login with email")}/>
+                        <FcGoogle className="cursor-pointer" size={"30"} onClick={() => alert("login with email")} />
+                        <RxGithubLogo size={30} className="cursor-pointer" onClick={() => alert("login with email")} />
                     </div>
                     <form
                         className="space-y-4"
@@ -111,7 +114,7 @@ export default function Page(){
                         {mutation.isSuccess && (
                             <div className="flex items-start gap-2.5 text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-lg px-3.5 py-3">
                                 <CheckCircle2 className="size-4 shrink-0 mt-0.5" />
-                                    <span>Signed in! Redirecting to dashboard...</span>
+                                <span>Signed in! Redirecting to dashboard...</span>
                             </div>
                         )}
 

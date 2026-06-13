@@ -2,8 +2,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { useState } from "react"
+import { useEffect, useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,19 +29,33 @@ export default function RootLayout({
 }>) {
 
   const [queryClient] = useState(() => new QueryClient());
-  
+
+  useEffect(() => {
+    const setVh = () => {
+      document.documentElement.style.setProperty(
+        "--vh",
+        `${window.innerHeight * 0.01}px`
+      );
+    };
+
+    setVh();
+    window.addEventListener("resize", setVh);
+    return () => window.removeEventListener("resize", setVh);
+  }, []);
+
   return (
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      
+
       <body className="min-h-full flex flex-col" cz-shortcut-listen="true">
         <QueryClientProvider client={queryClient}>
           {children}
-        </QueryClientProvider>    
+        </QueryClientProvider>
+        <Toaster position="bottom-right" richColors />
       </body>
-    
+
     </html>
   );
 }

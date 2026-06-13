@@ -41,7 +41,7 @@ export function Index() {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl grid-cols-1 gap-12 px-8 py-16 lg:grid-cols-2 lg:gap-16"
+      className="mx-auto grid min-h-[calc(var(--vh,1vh)*100-4rem)] max-w-7xl grid-cols-1 gap-12 px-8 py-16 lg:grid-cols-2 lg:gap-16"
     >
       {/* LEFT */}
       <motion.div variants={stagger} className="flex flex-col justify-center">
@@ -110,11 +110,10 @@ export function Index() {
                 key={l}
                 variants={scaleIn}
                 onClick={() => setSelectedLang(l)}
-                className={`rounded-[10px] border px-3 py-1.5 text-sm transition-colors ${
-                  selectedLang === l
+                className={`rounded-[10px] border px-3 py-1.5 text-sm transition-colors ${selectedLang === l
                     ? "border-brand-accent bg-brand-accent text-white"
                     : "border-brand-border bg-background text-foreground/80 hover:bg-brand-hover"
-                }`}
+                  }`}
               >
                 {l}
               </motion.button>

@@ -1,19 +1,15 @@
-import { Index } from "@/components/landingPage";
 import { Navbar } from "@/components/Navbar";
 import { UploadVideo } from "@/components/uploadVideo";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-
 
 export default function Home() {
-  
+
   return (
-    
-    <div className="bg-[#f5f3f4] h-screen w-full">
-      <Navbar/>
-      <UploadVideo/>
-      
-    </div> 
-  
+
+    <div className="bg-[#f5f3f4] min-h-[calc(var(--vh,1vh)*100)] w-full">
+      <Navbar />
+      <UploadVideo />
+
+    </div>
+
   );
 }

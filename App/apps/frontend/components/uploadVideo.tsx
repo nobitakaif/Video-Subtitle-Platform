@@ -5,14 +5,14 @@ import { VideoPreview } from "./videoPreview";
 import { create } from "zustand"
 import { set } from "idb-keyval"
 
-interface UploadStore{
-    file : File | null
-    setFile : (file : File ) => void
+interface UploadStore {
+    file: File | null
+    setFile: (file: File) => void
 }
 
-const useUploadStore = create<UploadStore>((set) =>({
-    file : null, 
-    setFile : (file) => set({file})
+const useUploadStore = create<UploadStore>((set) => ({
+    file: null,
+    setFile: (file) => set({ file })
 }))
 
 export function UploadVideo() {
@@ -29,14 +29,14 @@ export function UploadVideo() {
         }
 
         setFile(selectedFile);
-        
+
         set("pending-video", selectedFile)
-        
-        console.log('this iis file ',selectedFile)
+
+        console.log('this iis file ', selectedFile)
         const url = URL.createObjectURL(selectedFile);
-        console.log("this is url -> ",url)
-        
-        
+        console.log("this is url -> ", url)
+
+
 
         setPreviewUrl(url);
     }
@@ -69,7 +69,7 @@ export function UploadVideo() {
 
     const handleDragLeave = (e: any) => {
         setIsDragOver(false)
-        console.log('this is preivew Video ',previewUrl)
+        console.log('this is preivew Video ', previewUrl)
     }
 
     function truncateFileName(name: string, maxLength = 30) {
@@ -90,8 +90,8 @@ export function UploadVideo() {
         return `${start}...${end}${extension}`;
     }
 
-    return <div className="h-screen w-full flex justify-around items-center">
-        <VideoPreview videoUrl={previewUrl}/>
+    return <div className="min-h-[calc(var(--vh,1vh)*100)] w-full flex justify-around items-center">
+        <VideoPreview videoUrl={previewUrl} />
         <div className={`h-[80%] bg-[#eee6e6] w-[45%] rounded-lg relative   border-4 border-green-400 flex justify-center items-center flex-col`} style={{
             opacity: `${isDragOver ? 0.5 : 1} `
         }}

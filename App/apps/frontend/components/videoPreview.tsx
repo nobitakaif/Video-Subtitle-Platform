@@ -40,7 +40,8 @@ export function VideoPreview({ videoUrl }: { videoUrl: string | null }) {
                         />
                     <Button className="w-full text-lg mt-3 cursor-pointer" onClick={() =>{
                         const token = window.localStorage.getItem("token")
-                        if(token) {
+                        console.log(token)
+                        if(!token) {
                             redirect('/signin')
                         }
                     }}>Generat Subtitle</Button>
