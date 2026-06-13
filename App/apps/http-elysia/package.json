@@ -1,11 +1,15 @@
 {
-  "name": "http-elysia",
+  "name": "@repo/http-elysia",
   "version": "1.0.50",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.ts"
   },
+  "exports": {
+    "./app": "./src/app.ts"
+  },
   "dependencies": {
+    "@elysiajs/cors": "^1.4.2",
     "@elysiajs/jwt": "^1.4.2",
     "@repo/db": "workspace:*",
     "elysia": "latest",

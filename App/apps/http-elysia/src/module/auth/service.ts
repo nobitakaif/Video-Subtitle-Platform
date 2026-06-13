@@ -61,12 +61,13 @@ export abstract class AuthService {
                     }
                 }
                 const token = await jwt.sign({sub : user.id})
-
+                
                 return {
                     token ,
                     success : true
                 }
         }catch(e){
+            console.log(e)
             return {
                 msg : e,
                 success : false

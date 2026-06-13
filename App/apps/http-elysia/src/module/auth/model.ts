@@ -25,7 +25,7 @@ export namespace UserModel{
     export const signinSchema = t.Object({
         email : t.String({format : "email"}),
         password : t.String({minLength : 8, maxLength : 50}),
-        jwt : t.Any()
+        jwt : t.Optional(t.Any({}))
     })
     export type SigninSchema = typeof signinSchema.static
 

@@ -49,7 +49,7 @@ export const UserAuth = new Elysia({prefix : "/auth"})
             })
         }
         return status(400, {
-            success : false,
+            success : res.success,
             msg : res.msg
         })
     }, {
