@@ -2,7 +2,7 @@
 import { redirect } from "next/navigation";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
-import { get } from "idb-keyval"
+import { del, get } from "idb-keyval"
 
 export function VideoPreview({ videoUrl }: { videoUrl: string | null }) {
     const [file, setFile] = useState<File | null>(null)
@@ -18,7 +18,7 @@ export function VideoPreview({ videoUrl }: { videoUrl: string | null }) {
             console.log("Retrieved file:", file);
             
             const check = await get("pending-video")
-
+            
             if (file) {
                 setFile(file);
                 const videoUrl = URL.createObjectURL(file)
@@ -26,8 +26,9 @@ export function VideoPreview({ videoUrl }: { videoUrl: string | null }) {
                 console.log("preview -> ",preview, "videoUrl -> ", videoUrl)
             }
         }
-
+        
         loadVideo();
+
     }, []);
     return (
         <div className="flex items-center h-full justify-center flex-col">

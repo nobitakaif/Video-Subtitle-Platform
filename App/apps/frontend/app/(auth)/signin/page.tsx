@@ -46,7 +46,7 @@ export default function Page() {
 
         },
         onSuccess: () => {
-            router.push("/")
+            router.push("/video")
         },
     });
 
